@@ -1,0 +1,121 @@
+/* =====================================================================
+   css/lineup.css — หน้าจอไลน์อัพ (ใช้ตัวแปรจาก theme.css)
+   ===================================================================== */
+.lu { position: absolute; inset: 0; z-index: 60; display: none; overflow: hidden; }
+.lu.is-shown { display: block; }
+.lu [hidden] { display: none !important; }
+.lu-bg {
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(-45deg, var(--lobby-stripes) 0 2px, transparent 2px 24px),
+    var(--lu-bg);
+}
+
+/* หัวข้อ */
+.lu-head { position: absolute; top: 56px; left: 0; width: 100%; text-align: center; }
+.lu-title { font-size: var(--lu-title-size); font-weight: 700; letter-spacing: 10px; line-height: 1.2; }
+.lu-title::after { content: ''; display: block; width: 140px; height: 4px; margin: 8px auto 0; background: var(--c-stripe); }
+.lu-sub { margin-top: 10px; font-size: 22px; letter-spacing: 3px; color: var(--c-dim); white-space: pre; }
+
+/* แถวทีม: [หัวทีม][การ์ด 1–7 ใบ] */
+.lu-row {
+  position: absolute; left: 50px; right: 50px; display: flex; gap: 40px;
+  --lu-side: var(--c-dim); --lu-n: 5;
+}
+.lu-row--A { top: var(--lu-row-a-top); }
+.lu-row--B { top: var(--lu-row-b-top); }
+.lu-row[data-side="atk"] { --lu-side: var(--c-atk); }
+.lu-row[data-side="def"] { --lu-side: var(--c-def); }
+
+.lu-team {
+  flex: none; width: 300px; box-sizing: border-box; padding-left: 20px;
+  display: flex; flex-direction: column; justify-content: center;
+  border-left: 8px solid var(--lu-side);
+}
+.lu-team-logo { width: var(--lu-team-logo); height: var(--lu-team-logo); margin-bottom: 14px; }
+.lu-team-logo img { width: 100%; height: 100%; object-fit: contain; object-position: left center; }
+.lu-team-logo i {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  background: var(--lu-card-bg); font-style: normal; font-weight: 700; font-size: 44px;
+}
+.lu-team-name {
+  font-size: var(--lu-team-name-size); font-weight: 700; line-height: 1.15;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere;
+}
+.lu-team-side { margin-top: 8px; font-size: 18px; font-weight: 600; letter-spacing: 1px; color: var(--lu-side); }
+.lu-coach { margin-top: 6px; font-size: 18px; color: var(--c-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lu-coach:empty { display: none; }
+
+/* การ์ดผู้เล่น: กว้างสุด --lu-card-width แต่หดให้พอดีเมื่อมีหลายคน · คนน้อยจัดกลาง */
+.lu-cards { flex: 1; min-width: 0; display: flex; justify-content: center; gap: var(--lu-card-gap); }
+.lu-card {
+  position: relative; flex: none; perspective: 1200px;
+  width: min(var(--lu-card-width), calc((100% - (var(--lu-n) - 1) * var(--lu-card-gap)) / var(--lu-n)));
+  transition: transform 350ms var(--ease-out), opacity 350ms, filter 350ms;
+}
+.lu-flip { position: relative; transform-style: preserve-3d; }
+.lu-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.lu-front { background: var(--lu-card-bg); overflow: hidden; border-bottom: 5px solid var(--lu-side); }
+.lu-back {
+  position: absolute; inset: 0; transform: rotateY(180deg);
+  display: flex; align-items: center; justify-content: center;
+  background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.04) 0 3px, transparent 3px 14px), var(--lu-card-bg);
+  border-bottom: 5px solid var(--lu-side);
+}
+.lu-back-logo { width: 55%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+.lu-back-logo img { width: 100%; height: 100%; object-fit: contain; }
+.lu-back-logo i { font-style: normal; font-weight: 700; font-size: 48px; color: var(--lu-side); }
+.lu-photo {
+  position: relative; height: var(--lu-photo-height); background: #16202b;
+  display: flex; align-items: center; justify-content: center;
+}
+.lu-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.lu-photo-fb { font-style: normal; font-weight: 700; font-size: 80px; color: rgba(255, 255, 255, 0.12); }
+.lu-info { position: relative; padding: 12px 16px 14px; }
+.lu-name {
+  font-size: var(--lu-name-size); font-weight: 700; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lu-card.is-empty .lu-name { color: var(--c-dim); }
+.lu-meta { display: flex; margin-top: 4px; min-height: 1.4em; font-size: var(--lu-meta-size); white-space: nowrap; overflow: hidden; }
+.lu-role { color: var(--lu-side); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.lu-agent { color: var(--c-dim); }
+.lu-role:empty, .lu-agent:empty { display: none; }
+.lu-role:not(:empty) + .lu-agent:not(:empty)::before { content: '·'; margin: 0 8px; }
+.lu.no-role .lu-role, .lu.no-agent .lu-agent { display: none; }
+
+/* ไฮไลต์ผู้เล่น: การ์ดขยาย + เรืองแสงสีทีม · คนอื่นจางลง */
+.lu.has-focus .lu-card { opacity: 0.32; filter: saturate(0.4); }
+.lu.has-focus .lu-card.is-focus { opacity: 1; filter: none; transform: translateY(-14px) scale(1.12); z-index: 2; }
+.lu-card.is-focus .lu-front { box-shadow: 0 0 0 3px var(--lu-side), 0 18px 50px rgba(0, 0, 0, 0.6), 0 0 40px var(--lu-side); }
+
+/* เปิด / ปิด */
+.lu.is-entering { animation: lu-fade 400ms ease-out both; }
+.lu.is-entering .lu-head { animation: lu-drop 500ms var(--ease-out) 100ms both; }
+.lu.is-entering .lu-team { animation: lu-slide 500ms var(--ease-out) 200ms both; }
+/* การ์ดพลิกจากด้านหลังมาด้านหน้า ไล่ทีละใบ */
+.lu.is-entering .lu-flip { animation: lu-flip 700ms var(--ease-out) both; animation-delay: calc(350ms + var(--i, 0) * 110ms); }
+/* แถบสีปาดผ่านแล้วเผยชื่อ */
+.lu.is-entering .lu-info::after {
+  content: ''; position: absolute; left: 16px; right: 16px; top: 12px; height: 1.3em;
+  font-size: var(--lu-name-size); background: var(--lu-side); transform: scaleX(0);
+  animation: lu-bar 550ms ease-in-out both; animation-delay: calc(800ms + var(--i, 0) * 110ms);
+}
+.lu.is-entering .lu-name { animation: lu-reveal 1ms linear both; animation-delay: calc(1075ms + var(--i, 0) * 110ms); }
+.lu.is-leaving { animation: lu-out 400ms ease-in forwards; }
+@keyframes lu-fade { from { opacity: 0; } }
+@keyframes lu-out { to { opacity: 0; } }
+@keyframes lu-drop { from { opacity: 0; transform: translateY(-24px); } }
+@keyframes lu-slide { from { opacity: 0; transform: translateX(-40px); } }
+@keyframes lu-flip {
+  from { transform: rotateY(-180deg) translateY(30px); opacity: 0; }
+  20% { opacity: 1; }
+  to { transform: rotateY(0) translateY(0); opacity: 1; }
+}
+@keyframes lu-bar {
+  0% { transform: scaleX(0); transform-origin: 0 50%; }
+  50% { transform: scaleX(1); transform-origin: 0 50%; }
+  50.1% { transform: scaleX(1); transform-origin: 100% 50%; }
+  100% { transform: scaleX(0); transform-origin: 100% 50%; }
+}
+@keyframes lu-reveal { from { visibility: hidden; } to { visibility: visible; } }

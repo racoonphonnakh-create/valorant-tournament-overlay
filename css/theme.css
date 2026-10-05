@@ -1,0 +1,111 @@
+/* =====================================================================
+   css/theme.css — ตัวแปรสี/ขนาด/จังหวะ ทั้งระบบ (ทีมดีไซน์แก้ที่ไฟล์นี้)
+   ===================================================================== */
+/* ฟอนต์ Kanit (ไทย+อังกฤษ) เก็บในเครื่อง → ใช้ได้ทั้งใน OBS และตอนไม่มีเน็ต
+   เปลี่ยนฟอนต์: วางไฟล์ใหม่ใน assets/fonts แล้วแก้ url + ชื่อใน --font */
+@font-face { font-family: "Kanit"; font-weight: 400; font-display: swap; src: url("../assets/fonts/Kanit-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Kanit"; font-weight: 500; font-display: swap; src: url("../assets/fonts/Kanit-Medium.ttf") format("truetype"); }
+@font-face { font-family: "Kanit"; font-weight: 600; font-display: swap; src: url("../assets/fonts/Kanit-SemiBold.ttf") format("truetype"); }
+@font-face { font-family: "Kanit"; font-weight: 700; font-display: swap; src: url("../assets/fonts/Kanit-Bold.ttf") format("truetype"); }
+
+:root {
+  --font: "Kanit", "Prompt", "Noto Sans Thai", "Leelawadee UI", "Segoe UI", Tahoma, sans-serif;
+  --font-num: "Bahnschrift", "Kanit", "Segoe UI", sans-serif;
+
+  --c-bg: #0f1923;
+  --c-panel: #1b2733;
+  --c-text: #ece8e1;
+  --c-dim: #8b978f;
+  --c-stripe: #ff4655;                       /* สีเน้น (แดง VALORANT) */
+  --c-atk: #ff4655;
+  --c-def: #2ad4b7;
+  --c-win: #ffd166;                          /* ป้ายชนะ */
+  --c-lose: #4a5560;                         /* ป้ายแพ้ */
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* แถบสกอร์ */
+  --sb-top: 24px;
+  --sb-height: 76px;
+  --sb-team-width: 420px;
+  --sb-mid-width: 180px;
+  --sb-bg: rgba(15, 25, 35, 0.92);
+  --sb-name-size: 30px;
+  --sb-score-size: 48px;
+  --sb-timer-size: 40px;
+  --sb-logo: 60px;
+  --sb-side-height: 30px;                    /* แถบบอกฝั่ง ATK / DEF ใต้ชื่อทีม */
+  --sb-side-size: 16px;
+  --sb-side-text: #0f1923;
+
+  /* ป้ายผู้ชนะใต้แถบสกอร์ */
+  --win-top: 170px;
+  --win-logo: 110px;
+  --win-name-size: 60px;
+
+  /* แอนิเมชันเปลี่ยนแมตช์ */
+  --tr-bg: #0f1923;
+  --tr-title-size: 64px;
+  --tr-team-size: 56px;                      /* ชื่อทีมใต้โลโก้ */
+  --tr-team-logo: 260px;                     /* โลโก้ทีมที่พุ่งชนกันกลางจอ */
+  --tr-logo: 360px;                          /* ขนาดที่ 100% (ปรับ 50–200% ได้จากหน้าคอนโทรล) */
+}
+
+/* ===================== ไลน์อัพ ===================== */
+:root {
+  --lu-bg: #0f1923;
+  --lu-title-size: 54px;
+  --lu-row-a-top: 200px;                     /* แถวทีม A */
+  --lu-row-b-top: 610px;                     /* แถวทีม B */
+  --lu-team-logo: 140px;
+  --lu-team-name-size: 40px;
+  --lu-card-width: 280px;
+  --lu-card-gap: 20px;
+  --lu-photo-height: 250px;
+  --lu-card-bg: #1b2733;
+  --lu-name-size: 30px;
+  --lu-meta-size: 18px;
+}
+
+/* ===================== หน้ารอเข้าไลฟ์ (LOBBY.md) ===================== */
+:root {
+  --lobby-bg: #0f1923;
+  --lobby-bg-image: none;                    /* เช่น url("../assets/ui/lobby-bg.jpg") ขนาด 1920x1080 */
+  --lobby-stripes: rgba(255, 255, 255, 0.025);
+
+  /* โลโก้ + ชื่องาน (ฝั่งซ้าย) */
+  --lobby-logo-size: 520px;
+  --lobby-logo-cx: 420px;                    /* จุดกึ่งกลางโลโก้ แนวนอน */
+  --lobby-logo-cy: 430px;                    /* จุดกึ่งกลางโลโก้ แนวตั้ง */
+  --lobby-event-size: 56px;
+  --lobby-event-size-long: 44px;             /* ชื่องานยาวจนต้องขึ้น 2 บรรทัด */
+  --lobby-tagline-size: 28px;
+
+  /* ตาราง (ฝั่งขวา) */
+  --lobby-schedule-left: 860px;
+  --lobby-schedule-top: 140px;
+  --lobby-schedule-width: 980px;
+  --lobby-title-size: 40px;
+  --lobby-card-height: 110px;
+  --lobby-card-height-compact: 84px;         /* ใช้เมื่อ 4 คู่ขึ้นไป */
+  --lobby-card-gap: 18px;
+  --lobby-card-gap-compact: 12px;
+  --lobby-card-bg: rgba(27, 39, 51, 0.92);
+  --lobby-card-next: #ff4655;
+  --lobby-card-live: #ff4655;
+  --lobby-time-size: 40px;
+  --lobby-team-size: 30px;
+  --lobby-team-logo: 64px;
+
+  /* นับถอยหลัง (กลางล่าง) */
+  --lobby-countdown-top: 845px;
+  --lobby-countdown-size: 130px;
+  --lobby-countdown-label-size: 26px;
+
+  /* ข้อความวิ่ง */
+  --lobby-ticker-height: 44px;
+  --lobby-ticker-bg: #ff4655;
+  --lobby-ticker-color: #0f1923;
+  --lobby-ticker-size: 22px;
+}

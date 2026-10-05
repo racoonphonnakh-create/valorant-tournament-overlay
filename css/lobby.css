@@ -1,0 +1,308 @@
+/* =====================================================================
+   css/lobby.css — หน้ารอเข้าไลฟ์ (LOBBY.md หัวข้อ 6–7)
+   ใช้ตัวแปรจาก theme.css · จังหวะเข้าไลฟ์ใช้ --golive-* ที่ JS ตั้งให้
+   ===================================================================== */
+.lobby {
+  position: absolute; inset: 0; z-index: 50; display: none; overflow: hidden;
+  font-family: var(--font); color: var(--c-text);
+  --golive-close: 600ms; --golive-logo: 800ms; --golive-hold: 1000ms; --golive-open: 700ms;
+  --lb-logo-dx: 0px; --lb-logo-dy: 0px;
+}
+.lobby.is-shown { display: block; }
+.lobby [hidden] { display: none !important; }
+
+/* ---------- พื้นหลังสองครึ่ง (แยกออกตอนเข้าไลฟ์) ---------- */
+.lb-half {
+  position: absolute; top: 0; width: 50%; height: 100%; overflow: hidden;
+  background: var(--lobby-bg) var(--lobby-bg-image) no-repeat;
+  background-size: 1920px 1080px;
+}
+.lb-half--l { left: 0; background-position: 0 0; }
+.lb-half--r { left: 50%; background-position: -960px 0; }
+/* ลายเส้นเฉียง: สองครึ่งวาดลายผืนเดียวกัน (ครึ่งขวาเลื่อนกลับ 960px) → ไม่มีรอยต่อ */
+.lb-half::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 2280px; height: 100%;
+  background: repeating-linear-gradient(-45deg, var(--lobby-stripes) 0 2px, transparent 2px 24px);
+  animation: lb-stripes 30s linear infinite;
+}
+.lb-half--r::before { left: -960px; }
+@keyframes lb-stripes { to { transform: translateX(-339.411px); } }   /* 10 ช่วงลาย (24px × √2 × 10) */
+
+.lb-content { position: absolute; inset: 0; }
+
+/* ---------- โลโก้ + ชื่องาน (ซ้าย) ---------- */
+.lb-brand { position: absolute; top: 0; left: 0; width: calc(var(--lobby-logo-cx) * 2); height: 100%; }
+/* --lobby-logo-scale / --lobby-team-logo-scale ตั้งจากหน้าคอนโทรล (overlay.js ใส่ที่ #stage) */
+.lb-brand { --lb-logo-px: calc(var(--lobby-logo-size) * var(--lobby-logo-scale, 1)); }
+.lb-logo {
+  position: absolute;
+  left: calc(var(--lobby-logo-cx) - var(--lb-logo-px) / 2);
+  top: calc(var(--lobby-logo-cy) - var(--lb-logo-px) / 2);
+  width: var(--lb-logo-px); height: var(--lb-logo-px);
+  display: flex; align-items: center; justify-content: center;
+}
+.lb-logo img { width: 100%; height: 100%; object-fit: contain; }
+.lb-logo-fallback {
+  width: 70%; height: 70%; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+  border: 6px solid var(--lobby-card-next); background: var(--lobby-card-bg);
+  font-size: calc(var(--lb-logo-px) * 0.22); font-weight: 700; letter-spacing: 4px;
+}
+/* ชื่องาน + บรรทัดรอง เรียงต่อกันใต้โลโก้ (ชื่องานยาว → ขึ้น 2 บรรทัด บรรทัดรองเลื่อนลงเอง) */
+.lb-names {
+  position: absolute; left: 0; width: 100%; padding: 0 24px; box-sizing: border-box;
+  top: calc(var(--lobby-logo-cy) + var(--lb-logo-px) / 2 + 12px);
+  text-align: center;
+}
+.lb-event {
+  font-size: var(--lobby-event-size); font-weight: 700; line-height: 1.25;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  overflow-wrap: anywhere; text-wrap: balance;
+}
+.lb-event.is-long { font-size: var(--lobby-event-size-long); }
+.lb-tagline {
+  margin-top: 8px;
+  font-size: var(--lobby-tagline-size); letter-spacing: 4px; color: var(--c-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ---------- ตาราง (ขวา) ---------- */
+.lb-schedule {
+  position: absolute; left: var(--lobby-schedule-left); top: var(--lobby-schedule-top);
+  width: var(--lobby-schedule-width);
+}
+.lb-title {
+  height: 80px; box-sizing: border-box;
+  font-size: var(--lobby-title-size); font-weight: 700; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lb-title::after {
+  content: ''; display: block; width: 120px; height: 4px; margin-top: 6px;
+  background: var(--lobby-card-next);
+}
+.lb-cards {
+  display: flex; flex-direction: column; gap: var(--lobby-card-gap);
+  --lb-card-h: var(--lobby-card-height); --lb-scale: 1;
+}
+.lb-cards.is-compact {
+  gap: var(--lobby-card-gap-compact);
+  --lb-card-h: var(--lobby-card-height-compact); --lb-scale: 0.85;
+}
+.lb-card {
+  position: relative; height: var(--lb-card-h); box-sizing: border-box;
+  display: grid; grid-template-columns: 150px minmax(0, 1fr) 120px minmax(0, 1fr);
+  align-items: center; padding-right: 24px;
+  background: var(--lobby-card-bg);
+  border-left: 6px solid transparent;
+}
+.lb-when { display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
+.lb-time {
+  font-family: var(--font-num); font-size: calc(var(--lobby-time-size) * var(--lb-scale)); font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.lb-note {
+  max-width: 140px; margin-top: 4px;
+  font-size: calc(var(--lobby-team-size) * var(--lb-scale) * 0.55); color: var(--c-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lb-note:empty { display: none; }
+.lb-team { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.lb-team--A { justify-content: flex-end; }
+.lb-team-name {
+  min-width: 0; font-size: calc(var(--lobby-team-size) * var(--lb-scale)); font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lb-team--A .lb-team-name { text-align: right; }
+.lb-team-logo {
+  flex: none; display: flex; align-items: center; justify-content: center;
+  width: calc(var(--lobby-team-logo) * var(--lb-scale) * var(--lobby-team-logo-scale, 1));
+  height: calc(var(--lobby-team-logo) * var(--lb-scale) * var(--lobby-team-logo-scale, 1));
+}
+.lb-team-logo img { width: 100%; height: 100%; object-fit: contain; }
+.lb-team-fallback {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  background: var(--c-bg); color: var(--c-dim);
+  font-style: normal; font-weight: 700; font-size: calc(var(--lobby-team-size) * var(--lb-scale) * 0.6);
+}
+.lb-mid { text-align: center; font-family: var(--font-num); font-weight: 700; }
+.lb-vs { font-size: calc(var(--lobby-team-size) * var(--lb-scale) * 0.9); color: var(--c-dim); }
+.lb-score {
+  display: none; font-size: calc(var(--lobby-team-size) * var(--lb-scale) * 1.2);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.lb-badge {
+  position: absolute; top: 0; right: 0; padding: 2px 14px;
+  font-size: 15px; font-weight: 700; letter-spacing: 2px; line-height: 1.5;
+  transform-origin: 100% 0;
+}
+.lb-badge:empty { display: none; }
+.lb-badge.is-pop { animation: lb-badge-pop 250ms var(--ease-out); }
+
+/* สถานะของการ์ด */
+.lb-card[data-status="next"] {
+  border-left-color: var(--lobby-card-next);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07));
+}
+.lb-card[data-status="next"] .lb-badge { background: var(--lobby-card-next); color: var(--c-bg); }
+.lb-card[data-status="live"] { border-left-color: var(--lobby-card-live); }
+.lb-card[data-status="live"] .lb-badge { background: var(--c-bg); color: var(--lobby-card-live); }
+.lb-card[data-status="live"] .lb-badge::before {
+  content: '●'; margin-right: 6px; animation: lb-blink 1s steps(2, start) infinite;
+}
+.lb-card[data-status="done"] { opacity: 0.55; }
+.lb-card[data-status="done"] .lb-badge { background: var(--c-bg); color: var(--c-dim); }
+.lb-card[data-status="done"] .lb-vs { display: none; }
+.lb-card[data-status="done"] .lb-score { display: inline; }
+.lb-card[data-status="done"] .lb-team.is-win .lb-team-name { color: #fff; }
+.lb-card[data-status="done"] .lb-team.is-lose { opacity: 0.6; }
+.lb-card--new { animation: lb-fade-from 300ms ease-out; }
+
+/* ---------- นับถอยหลัง (กลางล่าง) ---------- */
+.lb-countdown { position: absolute; left: 0; top: var(--lobby-countdown-top); width: 100%; text-align: center; }
+.lb-cd-label { font-size: var(--lobby-countdown-label-size); line-height: 1.3; letter-spacing: 2px; color: var(--c-dim); }
+.lb-cd-time {
+  display: inline-block;
+  font-family: var(--font-num); font-size: var(--lobby-countdown-size); font-weight: 700; line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+.lb-cd-time.is-urgent { animation: lb-pulse 1s ease-in-out infinite; }
+.lb-cd-time.is-final { color: var(--c-stripe); }
+.lb-cd-zero { font-size: calc(var(--lobby-countdown-size) * 0.55); font-weight: 700; line-height: 1.9; }
+
+/* ---------- ข้อความวิ่ง ---------- */
+.lb-ticker {
+  position: absolute; left: 0; bottom: 0; width: 100%; height: var(--lobby-ticker-height); overflow: hidden;
+  background: var(--lobby-ticker-bg); color: var(--lobby-ticker-color);
+  font-size: var(--lobby-ticker-size); font-weight: 600; line-height: var(--lobby-ticker-height);
+}
+.lb-ticker-track {
+  position: absolute; left: 100%; top: 0; white-space: nowrap;
+  animation: lb-ticker 20s linear infinite;            /* ระยะเวลาจริง JS คำนวณจากความยาวข้อความ */
+}
+@keyframes lb-ticker { to { transform: translateX(calc(-1920px - 100%)); } }
+
+/* ---------- เปิด/ปิดหน้ารอ (6.4) ---------- */
+.lobby.is-entering { animation: lb-fade-from 500ms ease-out both; }
+.lobby.is-entering .lb-logo { animation: lb-logo-in 600ms var(--ease-out) 100ms both; }
+.lobby.is-entering .lb-event,
+.lobby.is-entering .lb-tagline { animation: lb-rise 500ms var(--ease-out) 300ms both; }
+.lobby.is-entering .lb-title { animation: lb-card-in 450ms var(--ease-out) 250ms both; }
+.lobby.is-entering .lb-card {
+  animation: lb-card-in 450ms var(--ease-out) both;
+  animation-delay: calc(340ms + var(--i, 0) * 90ms);
+}
+.lobby.is-entering .lb-countdown { animation: lb-rise 400ms var(--ease-out) 400ms both; }
+.lobby.is-entering .lb-ticker { animation: lb-fade-from 400ms ease-out 700ms both; }
+.lobby.is-leaving { animation: lb-fade-out 400ms ease-in forwards; }
+
+/* keyframes แบบมีแค่ from → จบที่ค่าจริงของ element (การ์ด "จบแล้ว" จะจบที่ opacity .55 เอง) */
+@keyframes lb-fade-from { from { opacity: 0; } }
+@keyframes lb-fade-out { to { opacity: 0; } }
+@keyframes lb-logo-in { from { opacity: 0; transform: scale(0.9); } }
+@keyframes lb-card-in { from { opacity: 0; transform: translateX(80px); } }
+@keyframes lb-rise { from { opacity: 0; transform: translateY(24px); } }
+@keyframes lb-badge-pop { from { transform: scale(0.6); } }
+@keyframes lb-blink { to { visibility: hidden; } }
+@keyframes lb-pulse { 50% { transform: scale(1.04); } }
+
+/* ---------- เข้าไลฟ์ (หัวข้อ 7) ---------- */
+/* ช่วง 1: ปิดตาราง — การ์ดออกขวา ไล่จากใบล่างขึ้นบน (--r = ลำดับนับจากล่าง) */
+.lobby.is-golive .lb-card {
+  animation: lb-card-out calc(var(--golive-close) - 350ms) var(--ease-in) forwards;
+  animation-delay: calc(var(--r, 0) * 70ms);
+}
+.lobby.is-golive .lb-title,
+.lobby.is-golive .lb-countdown,
+.lobby.is-golive .lb-ticker,
+.lobby.is-golive .lb-event,
+.lobby.is-golive .lb-tagline { animation: lb-drop-out var(--golive-close) ease-in forwards; }
+@keyframes lb-card-out { to { opacity: 0; transform: translateX(140px); } }
+@keyframes lb-drop-out { to { opacity: 0; transform: translateY(20px); } }
+
+/* ช่วง 2–4: โลโก้วิ่งมากลางจอ → ค้าง (เรืองแสง) → ขยายแล้วจางตอนม่านเปิด */
+.lobby.is-golive .lb-logo {
+  animation:
+    lb-logo-move var(--golive-logo) ease-in-out var(--golive-close) forwards,
+    lb-logo-glow var(--golive-hold) ease-in-out calc(var(--golive-close) + var(--golive-logo)) 1,
+    lb-logo-out 500ms var(--ease-in) calc(var(--golive-close) + var(--golive-logo) + var(--golive-hold)) forwards;
+}
+.lobby.is-golive .lb-logo::after {
+  content: ''; position: absolute; left: 50%; top: 50%; width: 60%; height: 60%; margin: -30% 0 0 -30%;
+  box-sizing: border-box; border: 6px solid var(--lobby-card-next); border-radius: 50%; opacity: 0;
+  animation: lb-ring var(--golive-hold) ease-out calc(var(--golive-close) + var(--golive-logo)) 1;
+}
+@keyframes lb-logo-move { to { transform: translate(var(--lb-logo-dx), var(--lb-logo-dy)) scale(1.2); } }
+@keyframes lb-logo-glow { 50% { filter: drop-shadow(0 0 48px var(--lobby-card-next)); } }
+@keyframes lb-logo-out {
+  from { transform: translate(var(--lb-logo-dx), var(--lb-logo-dy)) scale(1.2); opacity: 1; }
+  to { transform: translate(var(--lb-logo-dx), var(--lb-logo-dy)) scale(2.2); opacity: 0; }
+}
+@keyframes lb-ring {
+  from { opacity: 0.9; transform: scale(0.6); }
+  to { opacity: 0; transform: scale(2); }
+}
+
+/* ลายเส้นเร่งความเร็ว + ม่านเปิด */
+.lobby.is-golive .lb-half::before { animation-duration: 3s; }
+.lobby.is-golive .lb-half--l {
+  animation: lb-open-l var(--golive-open) var(--ease-in)
+    calc(var(--golive-close) + var(--golive-logo) + var(--golive-hold)) forwards;
+}
+.lobby.is-golive .lb-half--r {
+  animation: lb-open-r var(--golive-open) var(--ease-in)
+    calc(var(--golive-close) + var(--golive-logo) + var(--golive-hold)) forwards;
+}
+@keyframes lb-open-l { to { transform: translateX(-100%); } }
+@keyframes lb-open-r { to { transform: translateX(100%); } }
+
+/* ===================== ลูกเล่นเพิ่ม ===================== */
+/* โลโก้ลอยขึ้นลงช้า ๆ + เรืองแสงหายใจ (ใส่ที่รูปข้างใน — ไม่ชนกับแอนิเมชันเข้าไลฟ์ที่ใช้ .lb-logo) */
+.lobby.is-shown:not(.is-golive) .lb-logo > img,
+.lobby.is-shown:not(.is-golive) .lb-logo-fallback { animation: lb-float 6s ease-in-out infinite; }
+@keyframes lb-float {
+  0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 0 rgba(255, 70, 85, 0)); }
+  50% { transform: translateY(-14px); filter: drop-shadow(0 0 34px rgba(255, 70, 85, 0.45)); }
+}
+/* การ์ด "คู่ถัดไป": แสงวิ่งผ่านเป็นระยะ */
+.lb-card { overflow: hidden; }
+.lb-card[data-status="next"]::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, 0.13) 50%, transparent 60%) no-repeat;
+  background-size: 300% 100%; background-position: 100% 0;
+  animation: lb-shimmer 4.5s ease-in-out infinite;
+}
+@keyframes lb-shimmer { 0%, 55% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+/* นาฬิกาพลิก: แต่ละหลักเป็นแผ่นมีรอยพับกลาง */
+.lb-cd-time { perspective: 700px; }
+.lb-digit, .lb-colon { display: inline-block; }
+.lb-digit {
+  position: relative; min-width: 0.62em; margin: 0 0.04em; padding: 0 0.04em; border-radius: 10px; text-align: center;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0 49.4%, rgba(0, 0, 0, 0.55) 49.4% 50.6%, rgba(255, 255, 255, 0.04) 50.6% 100%);
+  transform-origin: 50% 50%;
+}
+.lb-colon { margin: 0 0.02em; }
+.lb-digit.is-flip { animation: lb-flip 420ms cubic-bezier(0.3, 1.4, 0.5, 1); }
+@keyframes lb-flip { from { transform: rotateX(-95deg); opacity: 0.2; } }
+
+/* 10 วินาทีสุดท้าย: เลขใหญ่เต็มจอ + แฟลชแดง */
+.lb-final {
+  position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none;
+}
+.lobby.is-final10 .lb-final { display: flex; }
+.lb-final span {
+  font-family: var(--font-num); font-size: 460px; font-weight: 700; line-height: 1; color: #fff;
+  text-shadow: 0 0 60px rgba(255, 70, 85, 0.7), 12px 12px 0 var(--c-stripe);
+}
+.lb-final span.is-tick { animation: lb-final-pop 1000ms cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+@keyframes lb-final-pop {
+  0% { transform: scale(1.9); opacity: 0; }
+  14% { transform: scale(1); opacity: 1; }
+  80% { transform: scale(0.96); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0; }
+}
+.lb-flash { position: absolute; inset: 0; background: var(--c-stripe); opacity: 0; pointer-events: none; }
+.lb-flash.is-tick { animation: lb-flash 500ms ease-out; }
+@keyframes lb-flash { from { opacity: 0.32; } to { opacity: 0; } }
+.lobby .lb-brand, .lobby .lb-schedule, .lobby .lb-countdown { transition: opacity 400ms; }
+.lobby.is-final10 .lb-brand, .lobby.is-final10 .lb-schedule, .lobby.is-final10 .lb-countdown { opacity: 0.12; }

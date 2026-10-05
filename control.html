@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VALORANT TOUR · Control</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/control.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-title">VALORANT TOUR · CONTROL</div>
+    <div class="conn" id="conn">⚪ กำลังเชื่อมต่อ…</div>
+    <div class="top-lobby" id="lobbyStatus"></div>
+    <span class="spacer"></span>
+    <button id="btnUndo" title="ย้อนกลับ (Ctrl+Z)">↶ ย้อนกลับ</button>
+    <button id="btnHelp" title="ปุ่มลัด (?)">?</button>
+    <button id="btnLinks" class="btn-go" title="คัดลอกลิงก์ overlay ไปใส่ใน OBS">🔗 ลิงก์ OBS</button>
+    <button id="btnSettings" title="ตั้งค่าการเชื่อมต่อ OBS">⚙</button>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab" data-tab="main">🎮 ควบคุมการแข่ง</button>
+    <button class="tab" data-tab="lineup">👥 ไลน์อัพ</button>
+    <button class="tab" data-tab="lobby">🕒 หน้ารอเข้าไลฟ์</button>
+  </nav>
+
+  <main>
+    <section id="tab-main" class="tabpane"></section>
+    <section id="tab-lineup" class="tabpane" hidden></section>
+    <section id="tab-lobby" class="tabpane" hidden></section>
+  </main>
+
+  <div id="toasts"></div>
+  <input type="file" id="imageFile" accept="image/*" hidden>
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
+
+  <div id="help" class="modal" hidden>
+    <div class="modal-box">
+      <h3>ปุ่มลัด</h3>
+      <p class="hint">คลิกที่ปุ่มทางขวาแล้วกดปุ่มใหม่บนคีย์บอร์ดเพื่อเปลี่ยน · <kbd>Esc</kbd> ยกเลิก · <kbd>Delete</kbd> ไม่ใช้ปุ่มลัด</p>
+      <div id="keysList" class="keys"></div>
+      <div class="key-row"><span class="grow">ย้อนกลับ</span><kbd>Ctrl</kbd>+<kbd>Z</kbd></div>
+      <div class="key-row"><span class="grow">เปิดหน้านี้</span><kbd>?</kbd></div>
+      <p class="hint">ปุ่มลัดทำงานทุกแท็บ · ไม่ทำงานตอนกำลังพิมพ์ในช่องข้อความ</p>
+      <div class="row"><button id="keysReset">↺ คืนค่าเริ่มต้น</button><span class="spacer"></span><button data-close>ปิด (Esc)</button></div>
+    </div>
+  </div>
+
+  <div id="links" class="modal" hidden>
+    <div class="modal-box modal-box--wide">
+      <h3>🔗 ลิงก์ Overlay สำหรับ OBS</h3>
+      <p class="hint">กด <b>คัดลอก</b> แล้วไปวางใน OBS → Sources → <b>+</b> → <b>Browser</b> → เอาติ๊ก <b>Local file</b> ออก → วางในช่อง <b>URL</b> · Width <b>1920</b> · Height <b>1080</b> · ลบข้อความในช่อง Custom CSS ออก</p>
+      <p class="hint link-pw" data-el="pwNote" hidden>⚠ ลิงก์มีรหัสผ่าน OBS ติดอยู่ (?pw=) — อย่าแชร์ลิงก์นี้ให้คนอื่น</p>
+      <div data-el="list"></div>
+      <div class="link-check" data-el="check"></div>
+      <div class="row"><button data-el="add" hidden>➕ เพิ่ม Browser Source เข้า OBS ให้เลย</button><span class="spacer"></span><button data-close>ปิด (Esc)</button></div>
+    </div>
+  </div>
+
+  <div id="settings" class="modal" hidden>
+    <div class="modal-box">
+      <h3>เชื่อมต่อ OBS WebSocket</h3>
+      <div class="row"><span class="lbl">ที่อยู่</span><input type="text" id="obsUrl" class="grow" placeholder="ws://127.0.0.1:4455"></div>
+      <div class="row"><span class="lbl">รหัสผ่าน</span><input type="password" id="obsPw" class="grow" placeholder="เว้นว่างถ้าปิด Authentication"></div>
+      <p class="hint">ดูค่าได้ที่ OBS → Tools → WebSocket Server Settings<br>
+        ฝั่ง overlay ใน OBS ใช้รหัสผ่านจาก <code>js/config.js</code> หรือเติม <code>?pw=รหัสผ่าน</code> ท้าย URL ของ Browser Source</p>
+      <div class="row"><span class="spacer"></span><button data-close>ยกเลิก</button><button id="obsSave" class="btn-go">บันทึกและเชื่อมต่อใหม่</button></div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="data/game-data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/lobby-state.js"></script>   <!-- ต้องอยู่ต่อจาก state.js -->
+  <script src="js/link.js"></script>
+  <script src="js/replay-control.js"></script>
+  <script src="js/lineup-control.js"></script>
+  <script src="js/links-control.js"></script>
+  <script src="js/lobby-control.js"></script> <!-- ต้องอยู่ก่อน control.js -->
+  <script src="js/control.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+/* =====================================================================
+   css/control.css — หน้าคอนโทรล (ทั้งสองแท็บ)
+   ===================================================================== */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh; background: var(--c-bg); color: var(--c-text);
+  font: 15px/1.5 var(--font);
+}
+[hidden] { display: none !important; }
+.spacer { flex: 1; }
+.grow { flex: 1; min-width: 0; }
+.w70 { width: 70px; }
+.pct { min-width: 48px; text-align: right; font-variant-numeric: tabular-nums; }
+input[type="range"] { padding: 0; accent-color: var(--c-stripe); }
+
+button, input, select {
+  font: inherit; color: var(--c-text);
+  background: #24313f; border: 1px solid #364656; border-radius: 4px; padding: 6px 10px;
+}
+button { cursor: pointer; white-space: nowrap; }
+button:hover:not(:disabled) { background: #2e3e4f; }
+button:disabled { opacity: 0.4; cursor: default; }
+input:focus, select:focus, button:focus-visible { outline: 2px solid var(--c-stripe); outline-offset: 1px; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--c-stripe); }
+input[type="time"] { color-scheme: dark; }
+kbd, code { padding: 1px 6px; background: #24313f; border-radius: 3px; font: 13px Consolas, monospace; }
+small, .hint { color: var(--c-dim); font-size: 13px; }
+
+.btn-go { background: var(--c-stripe); border-color: var(--c-stripe); color: #fff; font-weight: 600; }
+.btn-go:hover:not(:disabled) { background: #ff6470; }
+.btn-big { padding: 10px 18px; font-size: 16px; }
+.btn-x { padding: 4px 8px; color: var(--c-dim); }
+
+/* ---------- แถบบน + แท็บ ---------- */
+.top {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 14px; padding: 10px 16px;
+  background: #0b131b; border-bottom: 1px solid #24313f;
+}
+.top-title { font-weight: 700; letter-spacing: 2px; }
+.conn { font-size: 14px; }
+.top-lobby { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.ls { color: var(--c-dim); font-variant-numeric: tabular-nums; }
+.ls.is-on { color: #58e08c; }
+.tabs { display: flex; gap: 4px; padding: 10px 16px 0; background: #0b131b; }
+.tab { border-radius: 6px 6px 0 0; border-bottom: none; padding: 8px 18px; background: transparent; color: var(--c-dim); }
+.tab.is-active { background: var(--c-bg); color: var(--c-text); border-color: #364656; font-weight: 600; }
+
+main { padding: 16px; max-width: 1500px; margin: 0 auto; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.panel { padding: 14px 16px; background: var(--c-panel); border-radius: 6px; margin-bottom: 14px; }
+.grid2 > .panel { margin-bottom: 0; }
+.panel h3 { margin: 0 0 10px; font-size: 16px; }
+.row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.row:last-child { margin-bottom: 0; }
+.col { display: flex; flex-direction: column; gap: 6px; }
+.lbl { min-width: 110px; color: var(--c-dim); }
+.score-row .lbl { min-width: 0; }
+.score-row b { min-width: 34px; text-align: center; font: 700 24px var(--font-num); }
+
+.logo-btn {
+  flex: none; width: 72px; height: 72px; padding: 0; font-size: 26px;
+  background: #16202b center / contain no-repeat; border: 1px dashed #4a5c6e;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 4px;
+}
+.logo-btn--sm { width: 36px; height: 36px; font-size: 16px; }
+.logo-btn.is-drop { border-color: var(--c-stripe); border-style: solid; }
+
+.side { margin-left: 8px; font-size: 13px; font-weight: 400; }
+.side[data-side="atk"] { color: var(--c-atk); }
+.side[data-side="def"] { color: var(--c-def); }
+.clock, .lc-clock {
+  font: 700 56px/1.1 var(--font-num); font-variant-numeric: tabular-nums; margin-bottom: 10px;
+}
+.lc-clock { font-size: 72px; text-align: center; color: var(--c-dim); }
+.lc-clock.is-running { color: var(--c-text); }
+
+.lib-list { color: var(--c-dim); }
+.lib-item { display: flex; align-items: center; gap: 10px; padding: 4px 0; color: var(--c-text); }
+
+/* ---------- แท็บหน้ารอเข้าไลฟ์ ---------- */
+.lc-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.lc-head [data-el="toggle"].is-on { border-color: #58e08c; }
+.lc-state { color: var(--c-dim); }
+.lc-state.is-on { color: #58e08c; }
+.lr-rows { margin-bottom: 10px; }
+.lr-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  padding: 8px 0; border-bottom: 1px solid #24313f;
+}
+.lr-no { width: 18px; color: var(--c-dim); text-align: center; }
+.lr-side { display: inline-flex; align-items: center; gap: 4px; }
+.lr-side select { width: 92px; }
+.lr-side input { width: 170px; }
+.lr-vs { color: var(--c-dim); font-weight: 700; padding: 0 4px; }
+.lr-note { width: 150px; }
+.lr-score { display: inline-flex; align-items: center; gap: 4px; }
+.lr-score input { width: 52px; }
+
+/* ---------- แท็บไลน์อัพ ---------- */
+.lu-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid #24313f; }
+.lu-row select { width: 120px; }
+.lu-photo-btn { background-size: cover; background-position: center top; }
+.lu-row.is-focus { background: rgba(255, 209, 102, 0.08); box-shadow: inset 3px 0 0 #ffd166; }
+.lu-role-tag { min-width: 84px; font-size: 13px; color: var(--c-dim); }
+.roster { max-height: 520px; overflow-y: auto; }
+.roster-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid #24313f; }
+.roster-row select { width: 120px; }
+.roster-at { min-width: 110px; font-size: 13px; color: var(--c-dim); }
+.roster-at[data-team="A"] { color: var(--c-atk); }
+.roster-at[data-team="B"] { color: var(--c-def); }
+
+/* ---------- หน้าต่างลิงก์ OBS ---------- */
+.modal-box.modal-box--wide { width: 900px; }
+.link-row { padding: 10px 0; border-bottom: 1px solid #24313f; }
+.link-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.link-url { font: 13px Consolas, monospace; color: #cfd8e0; }
+.link-check { margin: 12px 0; padding: 10px 12px; border-radius: 4px; background: #16202b; color: var(--c-dim); }
+.link-check.is-ok { color: #58e08c; }
+.link-check.is-warn { color: #ffd166; }
+.link-pw { color: #ffd166; }
+
+/* ---------- toast + หน้าต่าง ---------- */
+#toasts { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  padding: 10px 16px; max-width: 420px; background: #24313f; border-left: 4px solid #58e08c; border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); transition: opacity 300ms;
+}
+.toast--error { border-left-color: var(--c-stripe); background: #4a1f26; }
+.toast.is-out { opacity: 0; }
+.modal {
+  position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+.modal-box { width: 480px; max-width: calc(100vw - 32px); padding: 20px; background: var(--c-panel); border-radius: 8px; }
+.modal-box h3 { margin: 0 0 12px; }
+.modal-box { max-height: calc(100vh - 32px); overflow-y: auto; }
+.key-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+.key-btn { min-width: 130px; padding: 3px 10px; font: 13px Consolas, monospace; }
+.key-btn.is-capturing { border-color: var(--c-stripe); color: var(--c-stripe); }
+button.is-on { border-color: #ffd166; color: #ffd166; }
